@@ -23,9 +23,7 @@ Param(
 	[Parameter(Position=0, Mandatory=$true, ValueFromPipeline=$true)]
     [string] $Office365Username,
 	[Parameter(Position=1, Mandatory=$true, ValueFromPipeline=$true)]
-    [string] $Office365Password,	
-	[Parameter(Position=2, Mandatory=$false, ValueFromPipeline=$true)]
-    [string] $UserIDFile
+    [string] $Office365Password
 )
 
 #Constant Variables
@@ -116,33 +114,33 @@ Function Main {
 #    None.
 #
 ###############################################################################
-function ConnectTo-ExchangeOnline
-{   
-	Param( 
-		[Parameter(
-		Mandatory=$true,
-		Position=0)]
-		[String]$Office365AdminUsername,
-		[Parameter(
-		Mandatory=$true,
-		Position=1)]
-		[String]$Office365AdminPassword
-
-    )
-		
-	#Encrypt password for transmission to Office365
-	$SecureOffice365Password = ConvertTo-SecureString -AsPlainText $Office365AdminPassword -Force    
-	
-	#Build credentials object
-	$Office365Credentials  = New-Object System.Management.Automation.PSCredential $Office365AdminUsername, $SecureOffice365Password
-	
-	#Create remote Powershell session
-	$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $Office365credentials -Authentication Basic тАУAllowRedirection    	
-
-	#Import the session
-    Import-PSSession $Session -AllowClobber | Out-Null
-}
-
-
-# Start script
+function ConnectTo-ExchangeOnline 
+{    
+    Param(  
+        [Parameter( 
+        Mandatory=$true, 
+        Position=0)] 
+        [String]$Office365AdminUsername, 
+        [Parameter( 
+        Mandatory=$true, 
+        Position=1)] 
+        [String]$Office365AdminPassword 
+ 
+    ) 
+         
+    #Encrypt password for transmission to Office365 
+    $SecureOffice365Password = ConvertTo-SecureString -AsPlainText $Office365AdminPassword -Force     
+     
+    #Build credentials object 
+    $Office365Credentials  = New-Object System.Management.Automation.PSCredential $Office365AdminUsername, $SecureOffice365Password 
+     
+    #Create remote Powershell session 
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $Office365credentials -Authentication Basic �AllowRedirection         
+ 
+    #Import the session 
+    Import-PSSession $Session -AllowClobber | Out-Null 
+} 
+ 
+ 
+# Start script 
 . Main
