@@ -15,7 +15,7 @@
 # Version: 				2.0
 # Last Modified Date: 	20.09.2014
 # Last Modified By: 	Alexander Makarov aka fcdm25 (aa_makarov@guu.ru)
-#                       Alexander Zubarev aka strike (av_zubarev@guu.ru) 
+#                       Alexander Zubarev aka strike (av_zubarev@guu.ru)
 ################################################################################################################################################################
 
 #Accept input parameters
@@ -37,25 +37,12 @@ Function Main {
 	Get-PSSession | Remove-PSSession
 	
 	#Call ConnectTo-ExchangeOnline function with correct credentials
-	ConnectTo-ExchangeOnline -Office365AdminUsername $Office365Username -Office365AdminPassword $Office365Password			
+	ConnectTo-ExchangeOnline -Office365AdminUsername $Office365Username -Office365AdminPassword $Office365Password
 	
-	#Prepare Output file with headers
-	#echo "UserPrincipalName,LastLogonDate" > $OutputFile
-	
-	#Check if we have been passed an input file path
-	if ($userIDFile -ne "")
-	{
-		#We have an input file, read it into memory
-		$objUsers = import-csv -Header "UserPrincipalName" $UserIDFile
-	}
-	else
-	{
-		#No input file found, gather all mailboxes from Office 365
-		$objUsers = get-mailbox -ResultSize Unlimited | select UserPrincipalName
-	}
-	
+	$objUsers = get-mailbox -ResultSize Unlimited | select UserPrincipalName
+    	
 	#Iterate through all users
-    $counter = 0 	
+    $counter = 0
     $counter_all=$objUsers.length
 
 	Foreach ($objUser in $objUsers)
@@ -114,33 +101,33 @@ Function Main {
 #    None.
 #
 ###############################################################################
-function ConnectTo-ExchangeOnline 
-{    
-    Param(  
-        [Parameter( 
-        Mandatory=$true, 
-        Position=0)] 
-        [String]$Office365AdminUsername, 
-        [Parameter( 
-        Mandatory=$true, 
-        Position=1)] 
-        [String]$Office365AdminPassword 
+function ConnectTo-ExchangeOnline
+{
+    Param(
+        [Parameter(
+        Mandatory=$true,
+        Position=0)]
+        [String]$Office365AdminUsername,
+        [Parameter(
+        Mandatory=$true,
+        Position=1)]
+        [String]$Office365AdminPassword
  
     ) 
          
-    #Encrypt password for transmission to Office365 
-    $SecureOffice365Password = ConvertTo-SecureString -AsPlainText $Office365AdminPassword -Force     
+    #Encrypt password for transmission to Office365
+    $SecureOffice365Password = ConvertTo-SecureString -AsPlainText $Office365AdminPassword -Force
      
-    #Build credentials object 
-    $Office365Credentials  = New-Object System.Management.Automation.PSCredential $Office365AdminUsername, $SecureOffice365Password 
+    #Build credentials object
+    $Office365Credentials  = New-Object System.Management.Automation.PSCredential $Office365AdminUsername, $SecureOffice365Password
      
-    #Create remote Powershell session 
-    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $Office365credentials -Authentication Basic –AllowRedirection         
+    #Create remote Powershell session
+    $Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://ps.outlook.com/powershell -Credential $Office365credentials -Authentication Basic –AllowRedirection      
  
-    #Import the session 
-    Import-PSSession $Session -AllowClobber | Out-Null 
+    #Import the session
+    Import-PSSession $Session -AllowClobber | Out-Null
 } 
- 
- 
-# Start script 
+
+
+# Start script
 . Main
